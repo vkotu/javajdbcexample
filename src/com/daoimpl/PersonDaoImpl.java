@@ -159,11 +159,60 @@ public class PersonDaoImpl implements PersonDao {
 
     @Override
     public void delete(int id) {
-        
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            connection = ConnectionConfiguration.getConnection();
+            preparedStatement = connection.prepareStatement("Delete from person where id = ?");
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+            System.out.println("Delete from person where id = ?");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try{
+                if(preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if(connection != null){
+                    connection.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
     }
 
     @Override
     public void update(Person person, int id) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = ConnectionConfiguration.getConnection();
+            preparedStatement = connection.prepareStatement("UPDATE person SET " +
+                    " first_name = ? , last_name  = ? where id = ?");
+            preparedStatement.setString(1, person.getFirstName());
+            preparedStatement.setString(2, person.getLastName());
+            preparedStatement.setInt(3, id);
+            preparedStatement.executeUpdate();
 
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                if(connection != null) {
+                    connection.close();
+                }
+                if(preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 }
